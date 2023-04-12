@@ -3,13 +3,17 @@ create table classroom
 	 room_number varchar(7),
 	 capacity numeric(4,0),
 	 primary key (building, room_number)
-	);
+	); 
+
+
 create table department
 	(dept_name varchar(20), 
 	 building varchar(15), 
 	 budget numeric(12,2) check (budget > 0),
 	 primary key (dept_name)
 	);
+
+
 create table course
 	(course_id varchar(8), 
 	 title varchar(50), 
@@ -18,6 +22,8 @@ create table course
 	 primary key (course_id),
 	 foreign key (dept_name) references department(dept_name) on delete set null
 	);
+
+
 create table instructor
 	(ID varchar(5), 
 	 name varchar(20) not null, 
@@ -26,6 +32,8 @@ create table instructor
 	 primary key (ID),
 	 foreign key (dept_name) references department(dept_name) on delete set null
 	);
+
+
 create table section
 	(course_id varchar(8), 
      sec_id varchar(8),
@@ -38,6 +46,8 @@ create table section
 	 foreign key (course_id) references course(course_id) on delete cascade,
 	 foreign key (building, room_number) references classroom(building, room_number) on delete set null
 	);
+
+
 create table teaches
 	(ID varchar(5), 
 	 course_id varchar(8),
@@ -48,6 +58,8 @@ create table teaches
 	 foreign key (course_id,sec_id, semester, year) references section(course_id,sec_id, semester, year) on delete cascade,
 	 foreign key (ID) references instructor(ID) on delete cascade
 	);
+
+
 create table student
 	(ID varchar(5), 
 	 name varchar(20) not null, 
@@ -56,6 +68,8 @@ create table student
 	 primary key (ID),
 	 foreign key (dept_name) references department(dept_name) on delete set null
 	);
+
+
 create table takes
 	(ID varchar(5), 
 	 course_id varchar(8),
@@ -67,6 +81,8 @@ create table takes
 	 foreign key (course_id,sec_id, semester, year) references section(course_id,sec_id, semester, year) on delete cascade,
 	 foreign key (ID) references student(ID) on delete cascade
 	);
+
+
 create table advisor
 	(s_ID varchar(5),
 	 i_ID varchar(5),
@@ -74,6 +90,8 @@ create table advisor
 	 foreign key (i_ID) references instructor (ID) on delete set null,
 	 foreign key (s_ID) references student (ID) on delete cascade
 	);
+
+
 create table time_slot
 	(time_slot_id varchar(4),
 	 day varchar(1),
@@ -83,6 +101,8 @@ create table time_slot
 	 end_min numeric(2) check (end_min >= 0 and end_min < 60),
 	 primary key (time_slot_id, day, start_hr, start_min)
 	);
+
+
 create table prereq
 	(course_id varchar(8), 
 	 prereq_id varchar(8),
