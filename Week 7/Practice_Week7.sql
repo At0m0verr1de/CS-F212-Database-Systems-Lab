@@ -1,12 +1,18 @@
 -- Procedure example
-DELIMITER $$ CREATE PROCEDURE GetCustomers() BEGIN
-select customer.customer_id,
-    customer.first_name,
-    customer.last_name
-from sakila.customer;
-END $$ DELIMITER;
+DELIMITER $$ 
+CREATE PROCEDURE GetCustomers() 
+    BEGIN
+        select customer.customer_id,
+            customer.first_name,
+            customer.last_name
+        from sakila.customer;
+    END $$
+DELIMITER;
+
 -- Calling the procedure
 CALL GetCustomers();
+
+
 -- You can pass parameters to procedures
 -- Procedure nesting is allowed
 -- When the procedure is called for the first time in a session, 
@@ -42,3 +48,56 @@ characteristic: {
 
 -- Create: Makes procedure known to server, can specifiy database if not default.
 -- IN, OUT, INOUT: Every par is IN by default unless specified otherwise.
+
+-- Write a MySQL procedure to show student list for semester.
+-- Name of semester is given as input and count the number of students in that semester.
+
+DELIMITER //
+CREATE DEFINER = 'root@localhost' PROCEDURE list_semester_and_count 
+(IN semester varchar(10), OUT count int )
+    READS SQL DATA
+    deterministic
+    sql security invoker
+    comment 'blah blah'
+
+    BEGIN
+        select student.name from university2.student
+        where student.id in (select takes.id from university2.takes where takes.semester = semester);
+
+        select count(student.name) into count from university2.student
+        where student.id in (select takes.id from university2.takes where takes.semester = semester)
+    END //
+DELIMITER ;
+
+call list_semester_and_count('Fall', @st_count);
+select @st_count;
+
+-- Consider Sakila database, find out that whether a DVD rental is overdue? If yes,
+-- then count overdue days. Make a function for the same
+DELIMITER //
+CREATE DEFINER = 'root@localhost' FUNCTION overdue(return_date DATE) RETURNS CHARSET utf8mb4
+    BEGIN
+        DECLARE sf_value VARCHAR(3);
+        IF curdate() > return_date
+            THEN SET sf_value = 'Yes';
+        ELSEIF  curdate() <= return_date
+            THEN SET sf_value = 'No';
+        END IF;
+
+        RETURN sf_value;
+    END //
+DELIMITER ;
+
+DELIMITER //
+     CREATE DEFINER=`root`@`localhost` FUNCTION count_days(return_date DATE) RETURNS int
+         DETERMINISTIC
+     begin
+            declare days INT;
+             IF curdate() > return_date
+                 THEN SET days = DATEDIFF(curdate(), return_date);
+             ELSEIF  curdate() <= return_date
+                 THEN SET days = 0;
+             END IF;
+             return days;
+     end //
+     DELIMITER ;

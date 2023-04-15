@@ -47,7 +47,7 @@ SELECT CASE quantity
 FROM `sakila`.`products`;
 
 -- important (because I have never used)
--- IF(expr1,expr2,expr3) If expr1 is TRUE (expr1 <> 0 and expr1 <> NULL), IF() returns expr2. 
+-- IF(expr1,expr2,expr3) If expr1 is TRUE (expr1 <> 0 and expr1 <> NULL), returns expr2. 
 -- Otherwise, it returns expr3.
 
 -- IFNULL(expr1, expr2) If expr1 is null returns expr2 otherwise expr1
